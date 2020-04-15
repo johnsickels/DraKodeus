@@ -16,7 +16,15 @@ const port = PORT || 80;
 
 app.post("/", (req, res) => {
   console.log(req);
-  return res.send("Hello World POST");
+  return res.json({
+    response_type: "in_channel",
+    text: "Feed me",
+    attachments: [
+      {
+        text: "Wilson memes",
+      },
+    ],
+  });
 });
 
 app.get("/", (req, res) => {
