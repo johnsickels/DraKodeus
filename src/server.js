@@ -32,11 +32,13 @@ app.post("/", (req, res) => {
         return res.json({
           response_type: "in_channel",
           text: "Here's your Wilson meme",
-          accessory: {
-            type: "image",
-            image_url: response.body.data.url,
-            alt_text: "Memeified with /wilsonfy",
-          },
+          attachments: [
+            {
+              // type: "image",
+              image_url: response.body.data.url,
+              // alt_text: "Memeified with /wilsonfy",
+            },
+          ],
         });
       }
     }
