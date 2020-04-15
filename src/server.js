@@ -1,5 +1,6 @@
 const Express = require("express");
 const bodyParser = require("body-parser");
+const needle = require("needle");
 require("dotenv").config();
 
 const app = new Express();
@@ -14,17 +15,32 @@ if (!slackToken) {
 
 const port = PORT || 80;
 
+const options = {
+  compressed: true,
+  accept: "application/json",
+  content_type: "application/json",
+};
+
 app.post("/", (req, res) => {
-  console.log(req);
-  return res.json({
-    response_type: "in_channel",
-    text: "Feed me",
-    attachments: [
-      {
-        text: "Wilson memes",
-      },
-    ],
-  });
+  needle.post(
+    "https://api.imgflip.com/caption_image?template_id=181913649&username=JohnSickels&password=test123&text0=Building memes yourself&text1=Using /wilsonify",
+    "",
+    options,
+    function (error, response) {
+      if (!error && response.statusCode == 200) {
+        console.log(response.body.data.url);
+        return res.json({
+          response_type: "in_channel",
+          text: "Here's your Wilson meme",
+          accessory: {
+            type: "image",
+            image_url: response.body.data.url,
+            alt_text: "Memeified with /wilsonfy",
+          },
+        });
+      }
+    }
+  );
 });
 
 app.get("/", (req, res) => {
