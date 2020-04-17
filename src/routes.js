@@ -18,7 +18,7 @@ router.post("/api/wilsonify", (req, res) => {
       if (!error && response.statusCode == 200) {
         return res.json({
           response_type: "in_channel",
-          replace_original: "true",
+          delete_original: "true",
           text: "Here's your Wilson meme",
           attachments: [
             {
