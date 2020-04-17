@@ -21,9 +21,10 @@ const options = {
   content_type: "application/json",
 };
 
-app.post("/", (req, res) => {
+app.post("/api/wilsonify", (req, res) => {
+  console.log(req);
   needle.post(
-    "https://api.imgflip.com/caption_image?template_id=181913649&username=JohnSickels&password=test123&text0=Building memes yourself&text1=Using /wilsonify",
+    "https://api.imgflip.com/caption_image?template_id=175540452&username=JohnSickels&password=test123&text0=I know nada about any of that.",
     "",
     options,
     function (error, response) {
