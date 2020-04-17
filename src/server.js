@@ -30,8 +30,9 @@ app.post("/api/wilsonify", (req, res) => {
     function (error, response) {
       if (!error && response.statusCode == 200) {
         console.log(response.body.data.url);
+        return req;
         return res.json({
-          response_type: "in_channel",
+          // response_type: "in_channel",
           text: "Here's your Wilson meme",
           attachments: [
             {
