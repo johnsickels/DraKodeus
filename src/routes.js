@@ -9,7 +9,6 @@ const options = {
 };
 
 router.post("/api/wilsonify", (req, res) => {
-  console.log(req);
   const text = req.body.text || "I know nada about any of that.";
   needle.post(
     `https://api.imgflip.com/caption_image?template_id=175540452&username=JohnSickels&password=test123&text0=${text}`,
@@ -18,7 +17,8 @@ router.post("/api/wilsonify", (req, res) => {
     function (error, response) {
       if (!error && response.statusCode == 200) {
         return res.json({
-          // response_type: "in_channel",
+          response_type: "in_channel",
+          replace_original: "true",
           text: "Here's your Wilson meme",
           attachments: [
             {
@@ -39,8 +39,8 @@ router.post("/api/test", (req, res) => {
     response
   ) {
     if (!error && response.statusCode == 200) {
-      // return req;
       return res.json({
+        response_type: "in_channel",
         text: JSON.stringify(req.body),
       });
     }
