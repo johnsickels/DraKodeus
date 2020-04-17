@@ -9,8 +9,10 @@ const options = {
 };
 
 router.post("/api/wilsonify", (req, res) => {
+  console.log(req);
+  const text = req.body.text || "I know nada about any of that.";
   needle.post(
-    "https://api.imgflip.com/caption_image?template_id=175540452&username=JohnSickels&password=test123&text0=I know nada about any of that.",
+    `https://api.imgflip.com/caption_image?template_id=175540452&username=JohnSickels&password=test123&text0=${text}`,
     "",
     options,
     function (error, response) {
