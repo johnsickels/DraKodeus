@@ -15,43 +15,9 @@ if (!slackToken) {
 
 const port = PORT || 80;
 
-const options = {
-  compressed: true,
-  accept: "application/json",
-  content_type: "application/json",
-};
+const routes = require("./routes");
 
-app.post("/api/wilsonify", (req, res) => {
-  console.log(req);
-  needle.post(
-    "https://api.imgflip.com/caption_image?template_id=175540452&username=JohnSickels&password=test123&text0=I know nada about any of that.",
-    "",
-    options,
-    function (error, response) {
-      if (!error && response.statusCode == 200) {
-        console.log(response.body.data.url);
-        // return req;
-        return res.json({
-          // response_type: "in_channel",
-          // text: "Here's your Wilson meme",
-          text: req,
-          attachments: [
-            {
-              // type: "image",
-              image_url: response.body.data.url,
-              // alt_text: "Memeified with /wilsonfy",
-            },
-          ],
-        });
-      }
-    }
-  );
-});
-
-app.get("/", (req, res) => {
-  console.log(req);
-  return res.send("Hello World GET");
-});
+app.use(routes);
 
 app.listen(port, () => {
   console.log(`Server started at localhost:${port}`);
