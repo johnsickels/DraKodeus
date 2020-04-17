@@ -33,6 +33,36 @@ router.post("/api/wilsonify", (req, res) => {
   );
 });
 
+// https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=length%20of%20an%20object&site=stackoverflow
+router.post("/api/overflow", (req, res) => {
+  const query = req.body.text || "what is truthy and falsey";
+  console.log(query);
+  needle.get(
+    `https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&q=${query}&site=stackoverflow`,
+    options,
+    function (error, response) {
+      if (!error && response.statusCode == 200) {
+        // console.log(response.body.items);
+        let text = "";
+        for (i = 0; i < 5; i++) {
+          //   console.log(
+          //     response.body.items[i].title + "\n" + response.body.items[i].link
+          //   );
+          text +=
+            response.body.items[i].title +
+            "\n" +
+            response.body.items[i].link +
+            "\n";
+        }
+        return res.json({
+          response_type: "in_channel",
+          text: text,
+        });
+      }
+    }
+  );
+});
+
 router.post("/api/test", (req, res) => {
   needle.post("https://en3ah8idfuhjm.x.pipedream.net", "", options, function (
     error,
