@@ -36,18 +36,17 @@ router.post("/api/wilsonify", (req, res) => {
 // https://api.stackexchange.com/2.2/search?order=desc&sort=activity&intitle=length%20of%20an%20object&site=stackoverflow
 router.post("/api/overflow", (req, res) => {
   const query = req.body.text || "what is truthy and falsey";
+  // what is the difference between == and === in javascript?
   console.log(query);
   needle.get(
-    `https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&q=${query}&site=stackoverflow`,
+    // /2.2/similar?order=desc&sort=relevance&title=In javascript what is the difference between let and var ?&site=stackoverflow
+    `https://api.stackexchange.com/2.2/similar?order=desc&sort=relevance&title=${query}&site=stackoverflow`,
     options,
     function (error, response) {
       if (!error && response.statusCode == 200) {
         // console.log(response.body.items);
         let text = "";
         for (i = 0; i < 5; i++) {
-          //   console.log(
-          //     response.body.items[i].title + "\n" + response.body.items[i].link
-          //   );
           text +=
             response.body.items[i].title +
             "\n" +
