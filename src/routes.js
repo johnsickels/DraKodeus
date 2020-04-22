@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const needle = require("needle");
+const he = require("he");
 
 const options = {
   compressed: true,
@@ -47,15 +48,12 @@ router.post("/api/overflow", (req, res) => {
         // console.log(response.body.items);
         let text = "";
         for (i = 0; i < 5; i++) {
-          text +=
-            response.body.items[i].title +
-            "\n" +
-            response.body.items[i].link +
-            "\n";
+          text += `:question: ${response.body.items[i].title}\n:link: ${response.body.items[i].link}\n`;
         }
+
         return res.json({
           response_type: "in_channel",
-          text: text,
+          text: he.decode(text),
         });
       }
     }
