@@ -37,34 +37,30 @@ router.post("/api/wilsonify", (req, res) => {
 router.post("/api/overflow", (req, res) => {
   const query = req.body.text || "what is truthy and falsey";
   console.log(query);
-  // needle.get(
-  //   `https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&q=${query}&site=stackoverflow`,
-  //   options,
-  //   function (error, response) {
-  //     if (!error && response.statusCode == 200) {
-  //       // console.log(response.body.items);
-  //       let text = "";
-  //       for (i = 0; i < 5; i++) {
-  //         //   console.log(
-  //         //     response.body.items[i].title + "\n" + response.body.items[i].link
-  //         //   );
-  //         text +=
-  //           response.body.items[i].title +
-  //           "\n" +
-  //           response.body.items[i].link +
-  //           "\n";
-  //       }
-  //       return res.json({
-  //         response_type: "in_channel",
-  //         text: text,
-  //       });
-  //     }
-  //   }
-  // );
-  res.json({
-    response_type: "in_channel",
-    text: "Questions from Stack Overflow",
-  });
+  needle.get(
+    `https://api.stackexchange.com/2.2/search/advanced?order=desc&sort=activity&q=${query}&site=stackoverflow`,
+    options,
+    function (error, response) {
+      if (!error && response.statusCode == 200) {
+        // console.log(response.body.items);
+        let text = "";
+        for (i = 0; i < 5; i++) {
+          //   console.log(
+          //     response.body.items[i].title + "\n" + response.body.items[i].link
+          //   );
+          text +=
+            response.body.items[i].title +
+            "\n" +
+            response.body.items[i].link +
+            "\n";
+        }
+        return res.json({
+          response_type: "in_channel",
+          text: text,
+        });
+      }
+    }
+  );
 });
 
 router.post("/api/test", (req, res) => {
