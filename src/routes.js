@@ -60,6 +60,33 @@ router.post("/api/overflow", (req, res) => {
   );
 });
 
+router.post("/api/humor", (req, res) => {
+  needle.get(
+    "https://www.reddit.com/r/programmerhumor/top/.json?count=20",
+    options,
+    function (error, response) {
+      if (!error && response.statusCode == 200) {
+        const random = Math.floor(Math.random() * 20);
+        const title = response.body.data.children[random].data.title;
+        const url = response.body.data.children[random].data.url;
+
+        return res.json({
+          response_type: "in_channel",
+          delete_original: "true",
+          text: title,
+          attachments: [
+            {
+              type: "image",
+              image_url: url,
+              alt_text: "Deilvered from r/programmerhumor",
+            },
+          ],
+        });
+      }
+    }
+  );
+});
+
 router.post("/api/test", (req, res) => {
   needle.post("https://en3ah8idfuhjm.x.pipedream.net", "", options, function (
     error,
