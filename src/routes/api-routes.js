@@ -82,7 +82,8 @@ router.post("/api/overflow", (req, res) => {
 
         return res.json({
           response_type: "in_channel",
-          text: arr,
+          text: "Please try your query again",
+          blocks: arr,
         });
       }
     }
