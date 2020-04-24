@@ -12,11 +12,12 @@ if (!slackToken) {
   process.exit(1);
 }
 
-const port = PORT || 80;
+const port = PORT || 4000;
 
-const routes = require("./routes");
-
-app.use(routes);
+const htmlRoutes = require("./routes/html-routes");
+const apiRoutes = require("./routes/api-routes");
+app.use(htmlRoutes);
+app.use(apiRoutes);
 
 app.listen(port, () => {
   console.log(`Server started at localhost:${port}`);

@@ -101,9 +101,4 @@ router.post("/api/test", (req, res) => {
   });
 });
 
-router.get("/", (req, res) => {
-  console.log(req);
-  return res.send("Hello World GET");
-});
-
 module.exports = router;
