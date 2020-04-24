@@ -1,4 +1,4 @@
-# SASHA - Systems Aossociative Simulating Hierarchical Attenuation
+# SASHA - Systems Associative Simulating Hierarchical Attenuation
 
 ## This does some goofy stuff
 
