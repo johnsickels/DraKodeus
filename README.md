@@ -1,4 +1,4 @@
-# Our very first Slack App
+# SASHA - Systems Aossociative Simulating Hierarchical Attenuation
 
 ## This does some goofy stuff
 
