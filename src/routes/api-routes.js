@@ -46,25 +46,43 @@ router.post("/api/overflow", (req, res) => {
     function (error, response) {
       if (!error && response.statusCode == 200) {
         // console.log(response.body.items[0]);
-        let text = "";
+        let arr = [];
+
         for (i = 0; i < 5; i++) {
           const res = response.body.items[i];
-          text += `:question: ${res.title}\n`;
-          text += `:link: ${res.link}\n`;
+
+          let obj = {
+            type: "section",
+            text: {
+              type: "mrkdwn",
+              text: "",
+            },
+          };
+
+          obj.text.text += `:question: *${he.decode(res.title)}*\n`;
+          obj.text.text += `:link: ${res.link}\n`;
           if (res.answer_count > 4) {
-            text += ":star::star::star::star::star:";
+            obj.text.text += ":star::star::star::star::star:";
           } else {
             for (j = 0; j < res.answer_count; j++) {
-              text += ":star:";
+              obj.text.text += ":star:";
             }
           }
-          text += ` Answers: ${res.answer_count}\n\n`;
+          obj.text.text += ` Answers: ${res.answer_count}\n\n`;
+
+          arr.push(obj);
+          if (i < 4) {
+            arr.push({
+              type: "divider",
+            });
+          }
         }
-        console.log(text);
+
+        console.log(arr);
 
         return res.json({
           response_type: "in_channel",
-          text: he.decode(text),
+          text: arr,
         });
       }
     }
