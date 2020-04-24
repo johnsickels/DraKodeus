@@ -38,18 +38,29 @@ router.post("/api/wilsonify", (req, res) => {
 router.post("/api/overflow", (req, res) => {
   const query = req.body.text || "what is truthy and falsey";
   // what is the difference between == and === in javascript?
-  console.log(query);
+  //   console.log(query);
   needle.get(
     // /2.2/similar?order=desc&sort=relevance&title=In javascript what is the difference between let and var ?&site=stackoverflow
     `https://api.stackexchange.com/2.2/similar?order=desc&sort=relevance&title=${query}&site=stackoverflow`,
     options,
     function (error, response) {
       if (!error && response.statusCode == 200) {
-        // console.log(response.body.items);
+        // console.log(response.body.items[0]);
         let text = "";
         for (i = 0; i < 5; i++) {
-          text += `:question: ${response.body.items[i].title}\n:link: ${response.body.items[i].link}\n`;
+          const res = response.body.items[i];
+          text += `:question: ${res.title}\n`;
+          text += `:link: ${res.link}\n`;
+          if (res.answer_count > 4) {
+            text += ":star::star::star::star::star:";
+          } else {
+            for (j = 0; j < res.answer_count; j++) {
+              text += ":star:";
+            }
+          }
+          text += ` Answers: ${res.answer_count}\n\n`;
         }
+        console.log(text);
 
         return res.json({
           response_type: "in_channel",
