@@ -2,12 +2,28 @@ const express = require("express");
 const router = express.Router();
 const needle = require("needle");
 const he = require("he");
+const firebase = require("firebase");
+require("firebase/database");
 
 const options = {
   compressed: true,
   accept: "application/json",
   content_type: "application/json",
 };
+
+// Your web app's Firebase configuration
+var firebaseConfig = {
+  apiKey: "AIzaSyAlfaxBqCHcWQbUvo7CrZabxDPIdyfPa4s",
+  authDomain: "sasha-1fe2a.firebaseapp.com",
+  databaseURL: "https://sasha-1fe2a.firebaseio.com",
+  projectId: "sasha-1fe2a",
+  storageBucket: "sasha-1fe2a.appspot.com",
+  messagingSenderId: "461301062830",
+  appId: "1:461301062830:web:28f240bf0092f0cc66613f",
+};
+// Initialize Firebase
+firebase.initializeApp(firebaseConfig);
+var database = firebase.database();
 
 router.post("/api/wilsonify", (req, res) => {
   const text = req.body.text || "I know nada about any of that.";
@@ -120,19 +136,82 @@ router.post("/api/humor", (req, res) => {
 router.post("/api/boil", (req, res) => {
   const text = req.body.text;
 
-  let boil = "/answer xxxx Thanks for `/ask`ing Trilobot!\n\n";
-  boil +=
-    "I'd like to open a zoom room while I work on a solution. Feel free to join if you'd like to provide more details about your question. There, we can chat for up to 15 minutes.\n\n";
-  boil += "https://zoom.us/j/12345678\n\n";
-  boil +=
-    "In the meantime, I will continue to develop a response and may edit this response shortly.\n\n";
-  boil += `- ${req.body.user_name}`;
+  /**
+   * If request text is a valid Zoom Personal Meeting ID (ten digit number)
+   * Save it to Firebase under their slackID
+   */
+  if (!text) {
+    database
+      .ref()
+      .orderByChild("slackID")
+      .equalTo(req.body.user_id)
+      .once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          const userData = snapshot.val();
+          const key = Object.keys(userData)[0];
+          const zoomPMID = userData[key].zoomPMID;
+          let boil = "/answer xxxx Thanks for `/ask`ing Trilobot!\n\n";
+          boil +=
+            "I'd like to open a zoom room while I work on a solution. Feel free to join if you'd like to provide more details about your question. There, we can chat for up to 15 minutes.\n\n";
+          boil += `https://zoom.us/j/${zoomPMID}\n\n`;
+          boil +=
+            "In the meantime, I will continue to develop a response and may edit this response shortly.\n\n";
+          boil += `- ${req.body.user_name}`;
 
-  return res.json({
-    response_type: "ephemeral",
-    replace_original: true,
-    text: boil,
-  });
+          return res.json({
+            response_type: "ephemeral",
+            replace_original: true,
+            text: boil,
+          });
+        } else {
+          console.log("user does not exist");
+          return res.json({
+            response_type: "ephemeral",
+            replace_original: true,
+            text:
+              "Please provide your Zoom Personal Meeting ID. Example: `/boil 1234567890`",
+          });
+        }
+      });
+  } else if (text.match(/\d{10}/)) {
+    // drop or replace slack ID
+
+    database
+      .ref()
+      .orderByChild("slackID")
+      .equalTo(req.body.user_id)
+      .once("value", (snapshot) => {
+        if (snapshot.exists()) {
+          // rewrite new zoomPMID
+          const userData = snapshot.val();
+          const key = Object.keys(userData)[0];
+
+          database.ref(key).update({ zoomPMID: text });
+          return res.json({
+            response_type: "ephemeral",
+            replace_original: true,
+            text: `Your Zoom PMID has been reset to ${text}. Request again with /boil`,
+          });
+        } else {
+          // write new zoomPMID
+
+          database.ref().push({ slackID: req.body.user_id, zoomPMID: text });
+          return res.json({
+            response_type: "ephemeral",
+            replace_original: true,
+            text:
+              "You are now ready for answer templates. Request again with /boil",
+          });
+        }
+      });
+  } else {
+    return res.json({
+      response_type: "ephemeral",
+      replace_original: true,
+      text:
+        "Please provide a valid Zoom Personal Meeting ID. Example: `/boil 1234567890`",
+    });
+  }
 });
 
 router.post("/api/test", (req, res) => {
