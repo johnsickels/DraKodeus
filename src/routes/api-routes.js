@@ -174,8 +174,6 @@ router.post("/api/boil", (req, res) => {
         }
       });
   } else if (text.match(/\d{10}/)) {
-    // drop or replace slack ID
-
     database
       .ref()
       .orderByChild("slackID")
@@ -195,7 +193,13 @@ router.post("/api/boil", (req, res) => {
         } else {
           // write new zoomPMID
 
-          database.ref().push({ slackID: req.body.user_id, zoomPMID: text });
+          database
+            .ref()
+            .push({
+              name: req.body.user_name,
+              slackID: req.body.user_id,
+              zoomPMID: text,
+            });
           return res.json({
             response_type: "ephemeral",
             replace_original: true,
@@ -204,6 +208,8 @@ router.post("/api/boil", (req, res) => {
           });
         }
       });
+  } else if ((text = "help")) {
+    // help here
   } else {
     return res.json({
       response_type: "ephemeral",
