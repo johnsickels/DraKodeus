@@ -117,6 +117,24 @@ router.post("/api/humor", (req, res) => {
   );
 });
 
+router.post("/api/boil", (req, res) => {
+  const text = req.body.text;
+
+  let boil = "/answer xxxx Thanks for `/ask`ing Trilobot!\n\n";
+  boil +=
+    "I'd like to open a zoom room while I work on a solution. Feel free to join if you'd like to provide more details about your question. There, we can chat for up to 15 minutes.\n\n";
+  boil += "https://zoom.us/j/12345678\n\n";
+  boil +=
+    "In the meantime, I will continue to develop a response and may edit this response shortly.\n\n";
+  boil += `- ${req.body.user_name}`;
+
+  return res.json({
+    response_type: "ephemeral",
+    replace_original: true,
+    text: boil,
+  });
+});
+
 router.post("/api/test", (req, res) => {
   needle.post("https://en3ah8idfuhjm.x.pipedream.net", "", options, function (
     error,
